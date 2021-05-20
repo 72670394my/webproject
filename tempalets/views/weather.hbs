@@ -58,15 +58,15 @@
             temp.innerHTML= (tempK-273.15).toFixed(2);
             resultSec.classList.remove('hide-layer');
             city.value="";
-            const tempMood=await arrData[0].weather[0].main;
+            const tempMood=arrData[0].weather[0].main;
             console.log(tempMood);
             if(tempMood=="Clouds"){
               tempStatus.innerHTML="<i class='fas fa-cloud' style='color:white'></i>"
             }
-            if(tempMood=="Clear"){
+           else if(tempMood=="Clear"){
               tempStatus.innerHTML="<i class='fas fa-sun' style='color:yellow'></i>"
             }
-            if(tempMood=="Rain"){
+            else if(tempMood=="Rain"){
               tempStatus.innerHTML="<i class='fas fa-cloud-rain' style='color:#13f2eb'></i>"
             }
             else{
