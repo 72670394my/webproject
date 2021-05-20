@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>header}}
+  </head>
+  <body>
+     {{>navbar}}
+    <!-- !---------------------main header------------------! -->
+    <div class="container-fluid wrapper">
+      <div class="row">
+        <div class="col-md-10 col-12 mx-auto">
+          <div class="main-content">
+              <form class="temp-form">
+                  <input type="text" id="city-name" placeholder="Enter Your Cityname" />
+                  <input type="submit" id="submit-btn" value="Search">
+              </form>
+          </div>
+          <div class="tempinfo">
+              <div class="top-layer">
+                  <p id="day">tuesday</p>
+                  <p id="today-date">oct 13</p>
+              </div>
+              <div class="main-layer">
+                  <p id="city_name">get Output Here</p>
+                  <div  class="middle-layer hide-layer ">
+                      <p ><span id="temp">0</span><sup>o</sup>C</p>
+                      <p id="temp-status"> <i class="fas fa-cloud"></i> </p>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+   {{>footer}}
+  </body>
+  <script >
+    const submit=document.getElementById('submit-btn');
+    const city=document.getElementById('city-name');
+     const cityname=document.getElementById('city_name');
+     const temp=document.getElementById('temp');
+     const resultSec=document.querySelector('.middle-layer');
+     const tempStatus=document.querySelector('#temp-status');
+     
+   const getData= async(event)=>{
+     event.preventDefault();
+     let cityName=city.value;
+     if(cityName===""){
+         cityname.innerHTML="Please Enter Valid City Name";
+       resultSec.classList.add("hide-layer");
+     }
+     
+     try{
+         const data=await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=82d087fee69667c25f69b53240c232f8`);
+         const objdata=await data.json();
+          const arrData=[objdata];
+           cityname.innerHTML=`${arrData[0].name}, ${arrData[0].sys.country}`;
+           const tempK=arrData[0].main.temp;
+            temp.innerHTML= (tempK-273.15).toFixed(2);
+            resultSec.classList.remove('hide-layer');
+            city.value="";
+            const tempMood=await arrData[0].weather[0].main;
+            console.log(tempMood);
+            if(tempMood=="Clouds"){
+              tempStatus.innerHTML="<i class='fas fa-cloud' style='color:white'></i>"
+            }
+            if(tempMood=="Clear"){
+              tempStatus.innerHTML="<i class='fas fa-sun' style='color:yellow'></i>"
+            }
+            if(tempMood=="Rain"){
+              tempStatus.innerHTML="<i class='fas fa-cloud-rain' style='color:#13f2eb'></i>"
+            }
+            else{
+              tempStatus.innerHTML="<i class='fas fa-sun' style='color:yellow'></i>"
+            }
+     }catch(e){
+         cityname.innerHTML="Please Enter Valid City Name";
+        resultSec.classList.add('hide-layer');
+     }
+   }
+    submit.addEventListener('click',getData);
+  </script>
+  <script>
+    const day=document.getElementById('day');
+    const date=document.getElementById('today-date');
+    function getDayName(){
+        var weekday = new Array(7);
+weekday[0] = "Sunday";
+weekday[1] = "Monday";
+weekday[2] = "Tuesday";
+weekday[3] = "Wednesday";
+weekday[4] = "Thursday";
+weekday[5] = "Friday";
+weekday[6] = "Saturday";
+        const currentDay=new Date();
+        return(weekday[currentDay.getDay()]);
+    } 
+    function getMonthName(){
+    var month = new Array();
+month[0] = "Jan";
+month[1] = "Feb";
+month[2] = "Mar";
+month[3] = "Apr";
+month[4] = "May";
+month[5] = "Jun";
+month[6] = "Jul";
+month[7] = "Aug";
+month[8] = "Sep";
+month[9] = "Oct";
+month[10] = "Nov";
+month[11] = "Dec";
+       const current=new Date();
+       let mont=current.getMonth();
+       let date=current.getDate();
+       return (`${month[mont]} ${date}`);
+   }
+   day.innerHTML=getDayName();
+   date.innerHTML=getMonthName();
+  </script>
+</html>
